@@ -8,10 +8,15 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String coverImagelink =
+        "https://thumbs.dreamstime.com/b/top-view-flat-lay-habit-tracker-book-pen-cup-black-coffee-succulent-plant-pot-blue-background-copy-space-206715044.jpg";
+    bool isloading = false;
+    final isPortrait =
+        MediaQuery.orientationOf(context) == Orientation.portrait;
     final List<Widget> habitCards = [
       Habitcard(
         icon: Icon(Icons.local_drink),
-        title: "Drinking water",
+        title: "Please, Drinking water all day at least 4 litter, good luck",
         subtitle: "1/3 glasses",
         streak: "3 days",
       ),
@@ -29,7 +34,6 @@ class DashboardScreen extends StatelessWidget {
         subtitle: "30 minutes",
         streak: "2 days",
       ),
-
       // SizedBox(height: 16,),
       Habitcard(
         icon: Icon(Icons.book),
@@ -57,70 +61,128 @@ class DashboardScreen extends StatelessWidget {
         // elevation: 1,
       ),
 
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (
-      //
-      //       ) {
-      //     // Navigate to the AddHabitScreen
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => AddHabitScreen()),
-      //     );
-      //   },
-      //   child: Icon(Icons.add),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to the AddHabitScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddHabitScreen()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
 
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              OrientationBuilder(
-                builder: (context, orientation) {
-                  // print(orientation.name); //always returns portrait
 
-                  final isPortrait =
-                      MediaQuery.orientationOf(context) == Orientation.portrait;
-                  if (isPortrait) {
-                    return Column(
-                      spacing: 16,
-                      children:
-                          //Habit cards
-                          habitCards,
-                    );
-                  } else {
-                    return Column(
-                      spacing: 16,
-                      children: [
-                        for (var i = 0; i < habitCards.length; i += 2)
-                          Row(
-                            spacing: 16,
-                            children: [
-                              Expanded(child: habitCards[i]),
-                              // SizedBox(width: 16,),
-                              if (i + 1 < habitCards.length)
-                                Expanded(child: habitCards[i + 1]),
-                            ],
-                          ),
-                      ],
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
+        child: Container(
 
-              FilledButton(onPressed: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddHabitScreen()),
-                  );
-              },style:FilledButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    minimumSize: Size(double.infinity, 48)
-                    ),child: Text("View All Habits"))
-            ],
+          //for background
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage("assetsl/Cover-photo.jpg"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+
+
+          child: SingleChildScrollView(
+
+            child: Column(
+              spacing: 16,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: 200,
+                  // child: Image.network(coverImagelink, fit: BoxFit.cover),
+                  child: Image.asset(
+                    "assetsl/Cover-photo.jpg",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+
+                // OrientationBuilder(
+                //   builder: (context, orientation) {
+                // print(orientation.name); //always returns portrait
+
+                // final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+
+                // if (isPortrait) {
+                //   return Column(
+                //     spacing: 16,
+                //     children:
+                //         //Habit cards
+                //         habitCards,
+                //   );
+                // } else {
+                //   return Column(
+                //     spacing: 16,
+                //     children: [
+                //       for (var i = 0; i < habitCards.length; i += 2)
+                //         Row(
+                //           spacing: 16,
+                //           children: [
+                //             Expanded(child: habitCards[i]),
+                //             // SizedBox(width: 16,),
+                //             if (i + 1 < habitCards.length)
+                //               Expanded(child: habitCards[i + 1]),
+                //           ],
+                //         ),
+                //     ],
+                //   );
+                // }
+                // },
+                // ),
+
+                //another way to do it
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    spacing: 16,
+                    children: [
+
+                      if (isPortrait)
+                        ...habitCards
+                      else
+                        Column(
+                          spacing: 16,
+                          children: [
+                            for (var i = 0; i < habitCards.length; i += 2)
+                              Row(
+                                spacing: 16,
+                                children: [
+                                  Expanded(child: habitCards[i]),
+                                  // SizedBox(width: 16,),
+                                  if (i + 1 < habitCards.length)
+                                    Expanded(child: habitCards[i + 1]),
+                                ],
+                              ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // FilledButton(onPressed: isloading? null:(){
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (context) => AddHabitScreen()),
+                //     );
+                // },style:FilledButton.styleFrom(
+                //       backgroundColor: Theme.of(context).colorScheme.primary,
+                //       foregroundColor: Colors.white,
+                //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                //       minimumSize: Size(double.infinity, 42)
+                //       ),child: isloading?SizedBox(
+                //         height: 24,
+                //         width: 24,
+                //         child: CircularProgressIndicator(
+                //         color: Colors.white),
+                //       ): Text("View All Habits")
+                // ),
+              ],
+            ),
           ),
         ),
       ),
@@ -129,9 +191,6 @@ class DashboardScreen extends StatelessWidget {
 }
 
 class Habitcard extends StatelessWidget {
-
-
-
   //just a habit card widget to display the habit details in a nice way
   final Widget icon;
   final String title;
@@ -146,9 +205,9 @@ class Habitcard extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final isdark=Theme.of(context).brightness==Brightness.dark;
-    final cardColor=isdark?Colors.grey.shade800:Colors.white;
-    final textColor=isdark?Colors.white:Colors.black;
+    final isdark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isdark ? Colors.grey.shade800 : Colors.white;
+    final textColor = isdark ? Colors.white : Colors.black;
     return Container(
       padding: EdgeInsets.all(16),
       alignment: .center,
@@ -160,41 +219,49 @@ class Habitcard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: .spaceBetween,
         children: [
-          Row(
-            children: [
-              //logo
-              Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: cardColor,
-                  shape: BoxShape.circle,
+          Expanded(
+            child: Row(
+              children: [
+                //logo
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: cardColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: icon,
                 ),
-                child: icon,
-              ),
 
-              //Gap
-              SizedBox(width: 16),
-              //title and subtitle
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,style: TextStyle(color: textColor),),
-                    SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        // color: Colors.grey.shade700,
-                        color: textColor
-                      ),
-
+                //Gap
+                SizedBox(width: 16),
+                //title and subtitle
+                Expanded(
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(color: textColor),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            fontSize: 12,
+                            // color: Colors.grey.shade700,
+                            color: textColor,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           //Streaks
@@ -205,9 +272,11 @@ class Habitcard extends StatelessWidget {
                 SizedBox(height: 4),
                 Text(
                   streak,
-                  style: TextStyle(fontSize: 12,
-                      // color: Colors.grey.shade700
-                  color: textColor),
+                  style: TextStyle(
+                    fontSize: 12,
+                    // color: Colors.grey.shade700
+                    color: textColor,
+                  ),
                 ),
               ],
             ),
