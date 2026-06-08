@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/Habit_traacker/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/Habit_traacker/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/Habit_traacker/build" />
+      <excludeFolder url="file://$MODULE_DIR$/advnc_Habit_tracker/Habit_traacker/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/advnc_Habit_tracker/Habit_traacker/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/advnc_Habit_tracker/Habit_traacker/build" />
+      <excludeFolder url="file://$MODULE_DIR$/module 6 Assignment/module-6-oop-advanced/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/module 6 Assignment/module-6-oop-advanced/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/module 6 Assignment/module-6-oop-advanced/build" />
+      <excludeFolder url="file://$MODULE_DIR$/module7assignmnet/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/module7assignmnet/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/module7assignmnet/build" />
+      <excludeFolder url="file://$MODULE_DIR$/module8assingment/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/module8assingment/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/module8assingment/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
