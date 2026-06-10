@@ -33,4 +33,24 @@ class TaskDatabase {
     final List<Map<String, dynamic>> maps = await db.query('tasks');
     return List.generate(maps.length, (i)=> Task.fromMap(maps[i]));
   }
+
+  Future<void> updateTask(Task task) async {
+    final db = await getDB();
+    await db.update(
+      'tasks',
+      task.toMap(),
+      where: 'id = ?',
+      whereArgs: [task.id],
+    );
+  }
+
+  Future<void> deleteTask(int id) async {
+    final db = await getDB();
+    await db.delete(
+      'tasks',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
 }
