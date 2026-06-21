@@ -1,8 +1,5 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do/Module10/CRUD/productControler.dart';
-
+import 'productControler.dart';
 import 'model/productModel.dart';
 
 class Crud extends StatefulWidget {
@@ -13,182 +10,177 @@ class Crud extends StatefulWidget {
 }
 
 class _CrudState extends State<Crud> {
-
   ProductController productController = ProductController();
-
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchData();
   }
 
-  Future fetchData() async{
-    await productController.fetchProducts();
+  Future fetchData() async {
     setState(() {
+      productController.isLoading = true;
+    });
 
+    await productController.fetchProducts();
+
+    setState(() {
+      productController.isLoading = false;
     });
   }
 
+  productDialog(Data? product) {
+    final name = TextEditingController(text: product?.productName);
+    final img = TextEditingController(text: product?.img);
+    final qty = TextEditingController(text: product?.qty?.toString());
+    final price = TextEditingController(text: product?.unitPrice?.toString());
+    final total = TextEditingController(text: product?.totalPrice?.toString());
 
-  productDialog(){
-    TextEditingController productNameController = TextEditingController();
-    TextEditingController productIMGController = TextEditingController();
-    TextEditingController productQTYController = TextEditingController();
-    TextEditingController productUnitPriceController = TextEditingController();
-    TextEditingController productTotalPriceController = TextEditingController();
-    showDialog(context: context, builder: (context)=>AlertDialog(
-      title: Text('Add Product'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: productNameController,
-            decoration: InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder()
-            ),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(product == null ? "Add Product" : "Update Product"),
+        content: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                controller: name,
+                decoration: InputDecoration(labelText: "Name"),
+              ),
+              TextField(
+                controller: img,
+                decoration: InputDecoration(labelText: "Image"),
+              ),
+              TextField(
+                controller: qty,
+                decoration: InputDecoration(labelText: "Qty"),
+              ),
+              TextField(
+                controller: price,
+                decoration: InputDecoration(labelText: "Price"),
+              ),
+              TextField(
+                controller: total,
+                decoration: InputDecoration(labelText: "Total"),
+              ),
+            ],
           ),
-          SizedBox(height: 10,),
-          TextField(
-            controller: productIMGController,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
 
-            decoration: InputDecoration(
-                labelText: 'Image',
-                border: OutlineInputBorder()
-            ),
-          ),
-          SizedBox(height: 10,),
-          TextField(
-            controller: productQTYController,
+          ElevatedButton(
+            onPressed: () async {
+              final data = Data(
+                sId: product?.sId,
+                productName: name.text,
+                img: img.text,
+                qty: int.tryParse(qty.text) ?? 0,
+                unitPrice: int.tryParse(price.text) ?? 0,
+                totalPrice: int.tryParse(total.text) ?? 0,
+                productCode: product?.productCode,
+              );
 
-            decoration: InputDecoration(
-                labelText: 'QTY',
-                border: OutlineInputBorder()
-            ),
-          ),
-          SizedBox(height: 10,),
-          TextField(
-            controller: productUnitPriceController,
+              bool result;
 
-            decoration: InputDecoration(
-                labelText: 'Unit price',
-                border: OutlineInputBorder()
-            ),
-          ),
-          SizedBox(height: 10,),
-          TextField(
-            controller: productTotalPriceController,
+              if (product == null) {
+                result = await productController.createProducts(data);
+              } else {
+                result = await productController.updateProduct(data);
+              }
 
-            decoration: InputDecoration(
-                labelText: 'Total Price',
-                border: OutlineInputBorder()
-            ),
+              Navigator.pop(context);
+
+              if (result) {
+                await fetchData();
+                if (!mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      product == null
+                          ? "Created Successfully"
+                          : "Updated Successfully",
+                    ),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("Something went wrong")));
+              }
+            },
+            child: Text(product == null ? "Save" : "Update"),
           ),
-          SizedBox(height: 10,),
         ],
       ),
-      actions: [
-        TextButton(onPressed: (){
-          Navigator.pop(context);
-        }, child: Text('Cancel')),
-
-        ElevatedButton(onPressed: (){
-          productController.createProducts(Data(
-              productName: productNameController.text,
-              img: productIMGController.text,
-              qty: int.parse(productQTYController.text),
-              unitPrice: int.parse(productUnitPriceController.text),
-              totalPrice: int.parse(productTotalPriceController.text)
-          )).then((value) async {
-            if(value){
-              await fetchData();
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Product Deleted...!'))
-              );
-
-            }else{
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Something wrong...!'))
-              );
-            }
-          });
-        }, child: Text('Save'))
-      ],
-    ));
+    );
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Product from API'),
-        backgroundColor: Colors.blue,
+      appBar: AppBar(title: Text("CRUD App")),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => productDialog(null),
+        child: Icon(Icons.add),
       ),
-      body: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              childAspectRatio: 0.8
 
-          ),
-          itemCount: productController.products.length,
-          itemBuilder: (context,index){
-            final product = productController.products[index];
-            return Card(
-              child: Container(
-                child: productController.isLoding ? CircularProgressIndicator() : Column(
-                  children: [
-                    SizedBox(
-                        height: 140,
-                        child: Image.network(product.img.toString())),
-                    Text(product.productName.toString(), style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold
-                    ),),
-
-                    Text('price: ${product.unitPrice} | QTY: ${product.qty}'),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(onPressed: (){},icon: Icon(Icons.edit,color: Colors.orange,),),
-                        IconButton(onPressed: () async {
-
-
-                          await productController.deleteProduct(product.sId.toString())
-                              .then((value) async {
-                            if(value){
-                              await fetchData();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Product Deleted...!'))
-                              );
-
-                            }else{
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Something wrong...!'))
-                              );
-                            }
-                          });
-
-
-
-
-                        },icon: Icon(Icons.delete,color: Colors.red,),),
-                      ],
-                    )
-                  ],
-                ),
+      body: productController.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : GridView.builder(
+              itemCount: productController.products.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
               ),
-            );
-          }),
+              itemBuilder: (context, index) {
+                final product = productController.products[index];
 
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        productDialog();
-      }, child: Icon(Icons.add),),
+                return Card(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Image.network(
+                          product.img ?? "",
+                          errorBuilder: (_, __, ___) => Icon(Icons.image),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+
+                      Text(product.productName ?? ""),
+                      Text("৳${product.unitPrice}"),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.orange),
+                            onPressed: () => productDialog(product),
+                          ),
+
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              await productController.deleteProduct(
+                                product.sId!,
+                              );
+
+                              await fetchData();
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
     );
   }
 }
