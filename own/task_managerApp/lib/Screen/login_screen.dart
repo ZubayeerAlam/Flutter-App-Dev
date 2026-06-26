@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/Screen/sign_up_screen.dart';
 import 'package:task_manager/Screen/your_mail_screen.dart';
+import '../Screen/main_nav_screen.dart';
 
 import '../Utils/app_color.dart';
 import '../Widget/ScreenBG.dart';
@@ -60,7 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     // width: double.infinity,
                     child: FilledButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainNavScreen()));
+                      },
                       child: Icon(Icons.arrow_circle_right_outlined, size: 25),
                     ),
                   ),
