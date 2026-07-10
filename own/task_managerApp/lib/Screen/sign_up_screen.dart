@@ -16,7 +16,6 @@ class signUpScreen extends StatefulWidget {
 }
 
 class _signUpScreenState extends State<signUpScreen> {
-
   void onTapSignIn() {
     Navigator.push(
       context,
@@ -25,7 +24,7 @@ class _signUpScreenState extends State<signUpScreen> {
   }
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
@@ -33,27 +32,30 @@ class _signUpScreenState extends State<signUpScreen> {
   TextEditingController mobileNumberController = TextEditingController();
 
   Future<void> signUp() async {
-    final ApiResponse response= await ApiCaller.postRequest(url: Urls.SignUpURL,
-    body: {
-      "email": emailController.text,
-      "password": passwordController.text,
-      "firstName": firstNameController.text,
-      "lastName": lastNameController.text,
-      "mobile": mobileNumberController.text,
-    },
+    final ApiResponse response = await ApiCaller.postRequest(
+      url: Urls.SignUpURL,
+      body: {
+        "email": emailController.text,
+        "password": passwordController.text,
+        "firstName": firstNameController.text,
+        "lastName": lastNameController.text,
+        "mobile": mobileNumberController.text,
+      },
     );
-    if(response.isSuccess){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sign up success....!')));
-
-
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.responseData['data'])));
-
+    if (response.isSuccess) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Sign up success....!')));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(response.responseData['data'])));
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class _signUpScreenState extends State<signUpScreen> {
                 key: formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                
+
                   children: [
                     SizedBox(height: 180),
                     Text(
@@ -89,9 +91,9 @@ class _signUpScreenState extends State<signUpScreen> {
                         return null;
                       },
                     ),
-                
+
                     SizedBox(height: 12),
-                
+
                     TextFormField(
                       controller: firstNameController,
                       decoration: InputDecoration(
@@ -107,9 +109,9 @@ class _signUpScreenState extends State<signUpScreen> {
                         return null;
                       },
                     ),
-                
+
                     SizedBox(height: 12),
-                
+
                     TextFormField(
                       controller: lastNameController,
                       decoration: InputDecoration(
@@ -125,9 +127,9 @@ class _signUpScreenState extends State<signUpScreen> {
                         return null;
                       },
                     ),
-                
+
                     SizedBox(height: 12),
-                
+
                     TextFormField(
                       controller: mobileNumberController,
                       decoration: InputDecoration(
@@ -143,9 +145,9 @@ class _signUpScreenState extends State<signUpScreen> {
                         return null;
                       },
                     ),
-                
+
                     SizedBox(height: 12),
-                
+
                     TextFormField(
                       controller: passwordController,
                       decoration: InputDecoration(
@@ -161,7 +163,7 @@ class _signUpScreenState extends State<signUpScreen> {
                         return null;
                       },
                     ),
-                
+
                     SizedBox(height: 8),
                     SizedBox(
                       // width: double.infinity,
@@ -171,7 +173,10 @@ class _signUpScreenState extends State<signUpScreen> {
                             signUp();
                           }
                         },
-                        child: Icon(Icons.arrow_circle_right_outlined, size: 25),
+                        child: Icon(
+                          Icons.arrow_circle_right_outlined,
+                          size: 25,
+                        ),
                       ),
                     ),
                   ],

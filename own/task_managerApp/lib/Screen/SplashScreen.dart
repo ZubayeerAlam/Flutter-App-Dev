@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../Utils/assets_path.dart';
 import '../Widget/ScreenBG.dart';
+import '../controller/auth_controller.dart';
 import 'login_screen.dart';
+import 'main_nav_screen.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -13,7 +15,6 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> {
-
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -21,11 +22,23 @@ class _SplashscreenState extends State<Splashscreen> {
     });
   }
 
-  Future<void>MoveToNextScreen()async{
-    await Future.delayed(Duration(seconds: 3));
-    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>LoginScreen()));
-  }
 
+  Future<void> MoveToNextScreen() async {
+    Future.delayed(Duration(seconds: 5));
+    await AuthController.getUserData();
+    bool isLogin = await AuthController.isLoggedIn();
+    if (isLogin) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

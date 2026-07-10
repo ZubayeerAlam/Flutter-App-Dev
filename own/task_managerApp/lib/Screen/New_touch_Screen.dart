@@ -1,7 +1,14 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:task_manager/Data/Model/task_model.dart';
+import '../Data/Model/Api_response.dart';
+import '../Data/Model/task_status_count_model.dart';
+import '../Data/Service/api_caller.dart';
+import '../Utils/Urls.dart';
+import '../Widget/taskCard.dart';
 import '../Widget/task_count_by_status.dart';
+import 'add_new_task_screen.dart';
 
 class NewTouchScreen extends StatefulWidget {
   const NewTouchScreen({super.key});
@@ -12,68 +19,110 @@ class NewTouchScreen extends StatefulWidget {
 
 class _NewTouchScreenState extends State<NewTouchScreen> {
   @override
+  void initState() {
+    super.initState();
+    getTaskCount();
+    getAlltask();
+  }
+
+  List<taskModel> taskLists = [];
+
+  Future<void> getAlltask() async {
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.getTaskURL("New"),
+    );
+    List<taskModel> taskList = [];
+
+    if (response.isSuccess) {
+      for (Map<String, dynamic> jsondata in response.responseData['data']) {
+        taskList.add(taskModel.fromJson(jsondata));
+      }
+      print(response.responseData['data']);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(jsonDecode(response.responseData['data']))),
+      );
+    }
+
+    setState(() {
+      taskLists = taskList;
+    });
+  }
+
+  List<TaskStatusCountModel> taskCount = [];
+
+  Future<void> getTaskCount() async {
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.getTaskCountURL,
+    );
+    List<TaskStatusCountModel> taskC = [];
+
+    if (response.isSuccess) {
+      for (Map<String, dynamic> jsonData in response.responseData['data']) {
+        taskC.add(TaskStatusCountModel.fromJson(jsonData));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response.responseData['status'].toString())),
+      );
+    }
+
+    setState(() {
+      taskCount = taskC;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SizedBox(
-            height: 90,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: 14,
+    return Scaffold(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              height: 90,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: taskCount.length,
+                itemBuilder: (context, index) {
+                  return task_count_by_status(
+                    count: taskCount[index].sum!.toInt(),
+                    title: taskCount[index].sId.toString(),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(width: 10);
+                },
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: taskLists.length,
               itemBuilder: (context, index) {
-                return task_count_by_status(count: 10, title: "New");
-              },
-              separatorBuilder: (context, index) {
-                return SizedBox(width: 10);
+                return taskCard(
+                  task: taskLists[index],
+                  color: Colors.blue,
+                  refreshParent: () {
+                    getAlltask();
+                    getTaskCount();
+                  },
+                );
               },
             ),
           ),
-        ),
-
-        Expanded(
-          child: ListView.builder(
-            itemCount: 15,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  "New Task ${index + 1}",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge!.copyWith(fontSize: 18),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "New Task lkjff afjlkajf afklfa fkjlkdfj flkjfkfjdlkajflkafjlkafdj dkfjlkdjflkajflkajflkafj kdfjlkdfjlkfdjlkjdaflkjfjkjaerfhihkjanfjFHQUEWJLDSNFKJ ",
-                    ),
-                    Text("Date:23/02/1990"),
-                    Row(
-                      children: [
-                        Chip(label: Text("New Task"),
-                          backgroundColor: Colors.blue,
-                          labelStyle: TextStyle(color: Colors.white),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24)
-                          )
-                        ),
-                        Spacer(),
-
-                        IconButton(onPressed: () {}, icon: Icon(Icons.edit_note, color: Colors.blue,)),
-                        IconButton(onPressed: () {}, icon: Icon(Icons.delete, color: Colors.red,))
-
-                      ],
-                    )
-                  ],
-
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddNewTaskScreen()),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
+
