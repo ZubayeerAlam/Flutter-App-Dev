@@ -1,15 +1,78 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../Data/Model/Api_response.dart';
+import '../Data/Model/task_model.dart';
+import '../Data/Model/task_status_count_model.dart';
+import '../Data/Service/api_caller.dart';
+import '../Utils/Urls.dart';
+import '../Widget/taskCard.dart';
 
 class CompletedTouchScreen extends StatefulWidget {
   const CompletedTouchScreen({super.key});
 
   @override
-  State<CompletedTouchScreen> createState() => _CompletedTouchScreenState();
+  State<CompletedTouchScreen> createState() => _State();
 }
 
-class _CompletedTouchScreenState extends State<CompletedTouchScreen> {
+class _State extends State<CompletedTouchScreen> {
+  List<taskModel> taskLists = [];
+
+  Future<void> getAlltask() async {
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.getTaskURL("Cancelled"),
+    );
+    List<taskModel> taskList = [];
+
+    if (response.isSuccess) {
+      for (Map<String, dynamic> jsondata in response.responseData['data']) {
+        taskList.add(taskModel.fromJson(jsondata));
+      }
+      print(response.responseData['data']);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(jsonDecode(response.responseData['data']))),
+      );
+    }
+    setState(() {
+      taskLists = taskList;
+    });
+  }
+  initState(){
+    super.initState();
+    getAlltask();
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+
+
+
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: taskLists.length,
+              itemBuilder: (context, index) {
+                return taskCard(
+                  task: taskLists[index],
+                  color: Colors.green,
+                  refreshParent: () {
+                    getAlltask();
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+
+
   }
 }

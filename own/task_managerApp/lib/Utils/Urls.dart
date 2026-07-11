@@ -6,5 +6,6 @@ class Urls {
   static String getTaskCountURL = '$baseURL/taskStatusCount';
   static String deleteTaskURL(String id) => '$baseURL/deleteTask/$id';
   static String getTaskURL(String status) => '$baseURL/listTaskByStatus/$status';
+  static String updateTaskStatusURL(String id, String status) => '$baseURL/updateTaskStatus/$id/$status';
 
 }

@@ -21,7 +21,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
     NewTouchScreen(),
     ProgressTouchScreen(),
     CompletedTouchScreen(),
-    CenceledTouchScreen(),
+    CancelledTouchScreen(),
   ];
 
   @override
