@@ -67,6 +67,11 @@ class _NewTouchScreenState extends State<NewTouchScreen> {
       );
     }
 
+    // taskC.removeWhere((element) => element.sId == null);
+    //
+    // final statusOrder = ['New', 'Progress', 'Completed', 'Cancelled'];
+    // taskC.sort((a, b) => statusOrder.indexOf(a.sId!).compareTo(statusOrder.indexOf(b.sId!)));
+
     setState(() {
       taskCount = taskC;
     });
@@ -85,9 +90,21 @@ class _NewTouchScreenState extends State<NewTouchScreen> {
                 scrollDirection: Axis.horizontal,
                 itemCount: taskCount.length,
                 itemBuilder: (context, index) {
+                  final statusOrder = [
+                    'New',
+                    'Progress',
+                    'Completed',
+                    'Cancelled',
+                  ];
+                  final task = taskCount.firstWhere(
+                    (s) => s.sId == statusOrder[index],
+                    orElse: () =>
+                        TaskStatusCountModel(sId: statusOrder[index], sum: 0),
+                  );
+
                   return task_count_by_status(
-                    count: taskCount[index].sum!.toInt(),
-                    title: taskCount[index].sId.toString(),
+                    count: task.sum!.toInt(),
+                    title: task.sId.toString(),
                   );
                 },
                 separatorBuilder: (context, index) {
@@ -125,4 +142,3 @@ class _NewTouchScreenState extends State<NewTouchScreen> {
     );
   }
 }
-
