@@ -30,7 +30,7 @@ class ProductController {
         "TotalPrice": data.totalPrice
       }),
     );
-
+    // Check  response status code
     return response.statusCode == 200;
   }
 
