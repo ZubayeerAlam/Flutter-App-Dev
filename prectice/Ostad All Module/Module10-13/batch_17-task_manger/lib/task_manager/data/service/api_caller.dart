@@ -8,9 +8,9 @@ class ApiCaller {
 
   static Future<ApiResponse>getRequest({required String url}) async {
     Response response = await get(Uri.parse(url),
-    headers: {
-      'token' : AuthController.accessToken ?? ''
-    }
+        headers: {
+          'token' : AuthController.accessToken ?? ''
+        }
 
     );
     print('URL=== $url');

@@ -29,10 +29,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passwordController = TextEditingController();
 
   Future<void>signUp() async {
-
-
-
-
     final ApiResponse response = await ApiCaller.PostRequest(url: TMUrls.SignUpURL,
     body: {
       "email":emailController.text,

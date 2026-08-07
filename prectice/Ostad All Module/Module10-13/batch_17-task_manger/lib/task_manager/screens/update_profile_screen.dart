@@ -42,16 +42,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if(passwordController.text.isNotEmpty){
       requestBody['password'] = passwordController.text;
     }
-
-
-
-
-
     final ApiResponse response = await ApiCaller.PostRequest(url: TMUrls.updateProfileURL,
         body: requestBody
 
     );
-
 
     if(response.isSuccess){
       UserModel user = UserModel(
@@ -67,7 +61,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainNavScreen()));
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sign up success....!')));
-
 
     }else{
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.responseData['data'])));

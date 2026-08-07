@@ -48,9 +48,6 @@ static Future getUserData() async {
 
     return token != null;
 
-
-
-
   }
 
 

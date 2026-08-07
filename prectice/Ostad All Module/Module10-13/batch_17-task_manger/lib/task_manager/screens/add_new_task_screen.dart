@@ -20,9 +20,6 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
 
   Future<void>createTask() async {
 
-
-
-
     final ApiResponse response = await ApiCaller.PostRequest(url: TMUrls.CreateTaskURL,
         body: {
           "title":titleController.text,
@@ -76,11 +73,6 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
             FilledButton(onPressed: (){
               createTask();
             }, child: Icon(Icons.arrow_circle_right_outlined,size: 25,)),
-
-
-
-
-
           ],
         ),
       ),

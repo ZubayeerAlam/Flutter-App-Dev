@@ -30,9 +30,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   List<TaskStatusCountModel> taskCount = [];
 
-
-
-
   Future<void> getAllTaskCount() async {
     final ApiResponse response = await ApiCaller.getRequest(url: TMUrls.getTaskCountURL);
 
